@@ -1,215 +1,200 @@
- {% extends "base.html" %} 
- 
- {% block content %} 
- 
- {% include "header.html" %}
+{% extends "base.html" %}
 
-<input type="hidden" id="last-successful-transaction-hash" value="">
+{% load static %}  <!-- Move this to the top -->
 
-<div class="promo-banner">
-  <!-- banner -->
-  <div class="center">
-    <div class="position">
-      <hgroup>
-        <h2>Will Rock Your Socks Off
-          <h2>
-            <h1>Blockchain Notary</h1>
-      </hgroup>
-      <p>Blockchain Notary is an open source service that computes the cryptographic hash for your documents and stores this
-        cryptographic information on the Blockchain.</p>
-      <a class="action scrollink" href="#notarise-block">Notarise</a>
-    </div>
-  </div>
-</div>
-<!-- banner END -->
+{% block content %}
+  
+  {% include "header.html" %}
 
-<main>
-  <!-- main conetn -->
-  <div class="center">
-    <section class="about">
-      <!-- about -->
-      <div class="box">
-        <!-- box 1 -->
-        <h2>What we do</h2>
-        <p>We provide a unique proof of any
-          <a href="https://en.wikipedia.org/wiki/Electronic_document" target="_blank">electronic document</a> and we record this information (notarise it). The result is a mathematical proof of your original document. Stored forever on the Blockchain.</p>
-        <a class="action" href="{% url 'about' %}">read more</a>
-      </div>
-      <!-- box 1 END -->
-      <div class="box">
-        <!-- box 2 -->
-        <h2>How it works</h2>
-        <p>Using our service, you will get the ultimate proof of your digital document yet it's secure and nobody but you gets
-          to access the content whilst everybody has an ability to verify it's authenticity.</p>
-        <a class="action" href="{% url 'about' %}">read more</a>
-      </div>
-      <!-- box 2 END -->
-      <div class="box">
-        <!-- box 2 -->
-        <h2>How much does it cost?</h2>
-        <p>
-          The total cost for this service is 1.00 ETH for all of your documents and we give you the lifetime warranty for your document
-          proof guaranteed by the Ethereum Blockchain network.
-          <a class="action" href="{% url 'about' %}">read more</a>
-      </div>
-    </section>
+  <input type="hidden" id="last-successful-transaction-hash" value="">
 
-    <section class="noterise-block" id="notarise-block">
-      <!-- Drag and drop zone -->
-      <h3>Notarise Your Document</h3>
-      <form action="/" method="get" class="dropzone" id="dropzoneform">{% csrf_token %}
-        <div class="dz-message">
-          <div class="indrop">
-            <img alt="drop file" src="/static/images/icon-upload.svg">
-            <p>Drag and drop your document here and
-              <span>have it certified on the Blockchain.</span>
-              <br> The file will not be uploaded.</p>
-          </div>
-        </div>
-      </form>
-      <table style="display: none;" id="dropzone-results">
-        <tr>
-          <th>Name</th>
-          <td data-file-name>Unknown</td>
-        </tr>
-        <tr>
-          <th>File type</th>
-          <td data-file-type>Unknown</td>
-        </tr>
-        <tr>
-          <th>Size</th>
-          <td data-file-size>Unknown</td>
-        </tr>
-        <tr>
-          <th>Last modified</th>
-          <td data-file-last-modified>Unknown</td>
-        </tr>
-        <tr>
-          <th>Hash</th>
-          <td data-file-hash>
-            <div id="hash-result"></div>
-          </td>
-        </tr>
-      </table>
-      <div class="notarise-action" id="upload-buttons"">
-        <button class="btn btn-success action" id="upload-button-notarise">Notarise</button>
-        <button class="btn btn-danger action" id="upload-button-cancel">Cancel</button>
-      </div>
-      <div class="spinner">
-        <div class="rect1"></div>
-        <div class="rect2"></div>
-        <div class="rect3"></div>
-        <div class="rect4"></div>
-        <div class="rect5"></div>
-        <p id="spinner-text">Waiting for confirmation of transaction…</p>
-        <p id="spinner-subtext"></p>
-      </div>
-      <p class="additional-info">If it has been certified already, you will be redirected to the original record.
-          <br>You can also input a hash to find previous records.</p>
-    </section>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
 
-    <section class="process">
-      <!-- process -->
-      <div class="inpro">
-        <img alt="add document" src="/static/images/proces-1.svg">
-        <h4>Add your document for digital verification</h4>
-        <p>Simply drag and drop documents that you want to digitally verify and we will compute the cryptographic hash and record
-          these hashes on the Blockchain. This is done in your browser so the contents of your files remain confidential.</p>
-      </div>
-      <div class="inpro">
-        <img alt="record proof" src="/static/images/proces-2.svg">
-        <h4>Record the document proof on the Blockchain</h4>
-        <p>We store the SHA-2 hash of your file, the SHA-2 hash of your email and the timestamp on the Blockchain. The timestamp
-          is generated by the Blockchain, so there is no chance of tampering.</p>
-      </div>
-      <div class="inpro">
-        <img alt="blockchain link" src="/static/images/proces-3.svg">
-        <h4>You get an email containing Blockchain referal link</h4>
-        <p>Once your document hash has been written on the Blockchain and we will send you a referal link to your own unique
-          cryptographic proof of the document.</p>
-      </div>
-    </section>
-    <!-- process END -->
-  </div>
-
-  <section class="doc-list">
-    <!-- list -->
+  <div class="promo-banner">
+    <!-- banner -->
     <div class="center">
-      <div class="tabs">
-        <a id="tab-certifications" href="#tab-certificationsC">Certifications</a>
-        <a class="inactive" id="tab-ongoing" href="#tab-ongoingC">Ongoing Submissions</a>
-      </div>
-      <div class="tab-certifications content-tab" id="tab-certificationsC">
-        <!-- certifications -->
-        <p class="doc-info">Documents of proven existence (notarised) and on the blockchain.</p>
-          <table class="table-layout">
-            <tr>
-              <th>Document Digest</th>
-              <th>Timestamp</th>
-            </tr>
-            <tr>
-              <td colspan="2">
-                Loading history…
-              </td>
-            </tr>
-          </table>
-      </div>
-      <div class="tab-ongoing content-tab" id="tab-ongoingC">
-        <!-- ongoing -->
-        <p class="doc-info">Documents already registered for certification, waiting for payments.</p>
-          <table class="table-layout">
-            <tr>
-              <th>Document Digest</th>
-              <th>Timestamp</th>
-            </tr>
-            <tr>
-              <td colspan="2">
-                Loading history…
-              </td>
-            </tr>
-          </table>
-      </div>
-      <!-- ongoing END-->
-    </div>
-  </section>
-</main>
-
-<!-- Modal -->
-<div class="modal" tabindex="-1" role="dialog" id="modal">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title-success">Alert</h5>
-        <button type="button" class="close" aria-label="Close dialog"></button>
-      </div>
-      <div class="modal-body">
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sit amet risus facilisis, gravida sem ut, imperdiet nisi.</p>
-      </div>
-      <div class="modal-footer">
-          <ul class="share-buttons">
-              <li><a href="https://www.facebook.com/sharer/sharer.php?u=&quote=" title="Share on Facebook" target="_blank" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(document.URL) + '&quote=' + encodeURIComponent(document.URL)); return false;"><img alt="Share on Facebook" src="static/images/flat_web_icon_set/color/Facebook.png" /></a></li>
-              <li><a href="https://twitter.com/intent/tweet?source=&text=:%20" target="_blank" title="Tweet" onclick="window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(document.title) + ':%20'  + encodeURIComponent(document.URL)); return false;"><img alt="Tweet" src="static/images/flat_web_icon_set/color/Twitter.png" /></a></li>
-              <li><a href="https://plus.google.com/share?url=" target="_blank" title="Share on Google+" onclick="window.open('https://plus.google.com/share?url=' + encodeURIComponent(document.URL)); return false;"><img alt="Share on Google+" src="static/images/flat_web_icon_set/color/Google+.png" /></a></li>
-              <li><a href="http://www.linkedin.com/shareArticle?mini=true&url=&title=&summary=&source=" target="_blank" title="Share on LinkedIn" onclick="window.open('http://www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent(document.URL) + '&title=' +  encodeURIComponent(document.title)); return false;"><img alt="Share on LinkedIn" src="static/images/flat_web_icon_set/color/LinkedIn.png" /></a></li>
-            </ul>
-        <button type="button" class="btn btn-secondary action modal-button" id="modal-button-1">OK</button>
-        <button type="button" class="btn-btn-secondary action modal-button" id="modal-button-2"></button>
+      <div class="position">
+        <hgroup>
+          <h2>Will Rock Your Socks Off</h2>  <!-- Fixed: Closed the <h2> tag properly -->
+          <h1>Blockchain Notary</h1>
+        </hgroup>
+        <p>Blockchain Notary is an open source service that computes the cryptographic hash for your documents and stores this
+          cryptographic information on the Blockchain.</p>
+        <a class="action scrollink" href="#notarise-block">Notarise</a>
       </div>
     </div>
   </div>
-</div>
+  <!-- banner END -->
 
-{% csrf_token %}
+  <main>
+    <!-- main content -->
+    <div class="center">
+      <section class="about">
+        <!-- about -->
+        <div class="box">
+          <!-- box 1 -->
+          <h2>What we do</h2>
+          <p>We provide a unique proof of any
+            <a href="https://en.wikipedia.org/wiki/Electronic_document" target="_blank">electronic document</a> and we record this information (notarise it). The result is a mathematical proof of your original document. Stored forever on the Blockchain.</p>
+          <a class="action" href="{% url 'about' %}">read more</a>
+        </div>
+        <!-- box 1 END -->
+        <div class="box">
+          <!-- box 2 -->
+          <h2>How it works</h2>
+          <p>Using our service, you will get the ultimate proof of your digital document yet it's secure and nobody but you gets
+            to access the content whilst everybody has an ability to verify its authenticity.</p>
+          <a class="action" href="{% url 'about' %}">read more</a>
+        </div>
+        <!-- box 2 END -->
+        <div class="box">
+          <!-- box 3 -->
+          <h2>How much does it cost?</h2>
+          <p>
+            The total cost for this service is 1.00 ETH for all of your documents and we give you the lifetime warranty for your document
+            proof guaranteed by the Ethereum Blockchain network.
+          </p>
+          <a class="action" href="{% url 'about' %}">read more</a>
+        </div>
+      </section>
 
-<script type="text/javascript">
-  if (screen.width <= 768) {
-    document.location = "/about";
-  }
-</script> 
+      <section class="noterise-block" id="notarise-block">
+        <!-- Drag and drop zone -->
+        <h3>Notarise Your Document</h3>
+        <form action="/" method="get" class="dropzone" id="dropzoneform">{% csrf_token %}
+          <div class="dz-message">
+            <div class="indrop">
+              <img alt="drop file" src="{% static 'images/icon-upload.svg' %}">
+              <p>Drag and drop your document here and
+                <span>have it certified on the Blockchain.</span>
+                <br> The file will not be uploaded.</p>
+            </div>
+          </div>
+        </form>
+        <table style="display: none;" id="dropzone-results">
+          <tr>
+            <th>Name</th>
+            <td data-file-name>Unknown</td>
+          </tr>
+          <tr>
+            <th>File type</th>
+            <td data-file-type>Unknown</td>
+          </tr>
+          <tr>
+            <th>Size</th>
+            <td data-file-size>Unknown</td>
+          </tr>
+          <tr>
+            <th>Last modified</th>
+            <td data-file-last-modified>Unknown</td>
+          </tr>
+          <tr>
+            <th>Hash</th>
+            <td data-file-hash>
+              <div id="hash-result"></div>
+            </td>
+          </tr>
+        </table>
+        <div class="notarise-action" id="upload-buttons">
+          <button class="btn btn-success action" id="upload-button-notarise">Notarise</button>
+          <button class="btn btn-danger action" id="upload-button-cancel">Cancel</button>
+        </div>
+        <div class="spinner">
+          <div class="rect1"></div>
+          <div class="rect2"></div>
+          <div class="rect3"></div>
+          <div class="rect4"></div>
+          <div class="rect5"></div>
+          <p id="spinner-text">Waiting for confirmation of transaction…</p>
+          <p id="spinner-subtext"></p>
+        </div>
+        <p class="additional-info">If it has been certified already, you will be redirected to the original record.
+          <br>You can also input a hash to find previous records.</p>
+      </section>
 
-{% load static %}
+      <section class="process">
+        <!-- process -->
+        <div class="inpro">
+          <img alt="add document" src="{% static 'images/proces-1.svg' %}">
+          <h4>Add your document for digital verification</h4>
+          <p>Simply drag and drop documents that you want to digitally verify and we will compute the cryptographic hash and record
+            these hashes on the Blockchain. This is done in your browser so the contents of your files remain confidential.</p>
+        </div>
+        <div class="inpro">
+          <img alt="record proof" src="{% static 'images/proces-2.svg' %}">
+          <h4>Record the document proof on the Blockchain</h4>
+          <p>We store the SHA-2 hash of your file, the SHA-2 hash of your email, and the timestamp on the Blockchain. The timestamp
+            is generated by the Blockchain, so there is no chance of tampering.</p>
+        </div>
+        <div class="inpro">
+          <img alt="blockchain link" src="{% static 'images/proces-3.svg' %}">
+          <h4>You get an email containing a Blockchain referral link</h4>
+          <p>Once your document hash has been written on the Blockchain, we will send you a referral link to your own unique
+            cryptographic proof of the document.</p>
+        </div>
+      </section>
+      <!-- process END -->
+    </div>
 
-<script src="{% static 'js/notarise.js' %}" settings_bytecode_notarise="{{ settings_bytecode_notarise }}" settings_bytecode_storage="{{ settings_bytecode_storage }}" settings_contract_address_notarise="{{ settings_contract_address_notarise }}" settings_contract_address_storage="{{ settings_contract_address_storage }}" settings_gas="{{ settings_gas }}" settings_ether_value="{{ settings_ether_value }}"></script>
-<script src="{% static 'js/modal.js' %}" settings_email_notarised_html="{{ settings_email_notarised_html }}"></script>
+    <section class="doc-list">
+      <!-- list -->
+      <div class="center">
+        <div class="tabs">
+          <a id="tab-certifications" href="#tab-certificationsC">Certifications</a>
+          <a class="inactive" id="tab-ongoing" href="#tab-ongoingC">Ongoing Submissions</a>
+        </div>
+        <div class="tab-certifications content-tab" id="tab-certificationsC">
+          <!-- certifications -->
+          <p class="doc-info">Documents of proven existence (notarised) and on the blockchain.</p>
+          <table class="table-layout">
+            <tr>
+              <th>Document Digest</th>
+              <th>Timestamp</th>
+            </tr>
+            <tr>
+              <td colspan="2">
+                Loading history…
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="tab-ongoing content-tab" id="tab-ongoingC">
+          <!-- ongoing -->
+          <p class="doc-info">Documents already registered for certification, waiting for payments.</p>
+          <table class="table-layout">
+            <tr>
+              <th>Document Digest</th>
+              <th>Timestamp</th>
+            </tr>
+            <tr>
+              <td colspan="2">
+                Loading history…
+              </td>
+            </tr>
+          </table>
+        </div>
+        <!-- ongoing END-->
+      </div>
+    </section>
+  </main>
 
-{% endblock content %}
+  <!-- Modal -->
+  <div class="modal" tabindex="-1" role="dialog" id="modal">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title-success">Alert</h5>
+          <button type="button" class="close" aria-label="Close dialog"></button>
+        </div>
+        <div class="modal-body">
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. Dui accumsan sit
+            amet nulla facilisi morbi tempus iaculis urna id. </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

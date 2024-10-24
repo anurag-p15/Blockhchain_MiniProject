@@ -11,27 +11,23 @@ from django.utils import timezone
 from notary.models import Submissions
 
 def about(request):
-
     return render(
         request=request,
         template_name='about.html',
         context={},
     )
 
-
 def ajax_list_transaction_history(request):
-
     try:
         ongoing_submissions = []
-        date_from=timezone.now() - datetime.timedelta(minutes=getattr(settings, "REMOVE_FROM_OUTGOING_TIME", 1))
+        date_from = timezone.now() - datetime.timedelta(minutes=getattr(settings, "REMOVE_FROM_OUTGOING_TIME", 1))
 
         # Set all older submissions to proved
-        submissions_to_prove=Submissions.objects.filter(transaction_created_at__lte=date_from, has_proof=False).update(has_proof=True)
+        submissions_to_prove = Submissions.objects.filter(transaction_created_at__lte=date_from, has_proof=False).update(has_proof=True)
 
         _ongoing_submissions = Submissions.objects.filter(has_proof=False).order_by("-transaction_created_at")
 
         for _submission in _ongoing_submissions:
-
             submission = {
                 'file_name': _submission.file_name,
                 'file_mime_type': _submission.file_mime_type,
@@ -43,7 +39,6 @@ def ajax_list_transaction_history(request):
                 'transaction_created_at': _submission.transaction_created_at,
             }
             ongoing_submissions.append(submission)
-
 
         certifications = []
         _certifications = Submissions.objects.filter(has_proof=True).order_by("-transaction_created_at")[:28]
@@ -60,7 +55,6 @@ def ajax_list_transaction_history(request):
                 'transaction_created_at': _certificate.transaction_created_at,
             }
             certifications.append(_certificate)
-            
 
         response = {
             'result': 'true',
@@ -69,11 +63,12 @@ def ajax_list_transaction_history(request):
         }
 
         return JsonResponse(response)
-    except:
+    except Exception as e:
+        print(f"Exception: {e}")
         return JsonResponse({'result': 'false'})
 
 def ajax_set_ongoing_submissions(request):
-    if(request.POST):
+    if request.POST:
         try:
             Submissions.objects.create(
                 file_name=request.POST.get("file_name", None),
@@ -83,57 +78,64 @@ def ajax_set_ongoing_submissions(request):
                 file_hash=request.POST.get("file_hash", None),
                 has_proof=request.POST.get("has_proof", None),
                 transaction_hash=request.POST.get("transaction_hash", None)
-                )
+            )
             return JsonResponse({'result': 'true'})
-        except:
+        except Exception as e:
+            print(f"Exception: {e}")
             return JsonResponse({'result': 'false'})
     else:
         return JsonResponse({'result': 'false'})
 
 def ajax_get_document_data(request):
-    if(request.POST):
+    if request.POST:
         try:
             document = Submissions.objects.filter(file_hash=request.POST.get("file_hash"))
-            if(len(document)>0):
-                date=document[0].transaction_created_at
-                transaction_hash=document[0].transaction_hash
+            if len(document) > 0:
+                date = document[0].transaction_created_at
+                transaction_hash = document[0].transaction_hash
                 return JsonResponse({
-                "result": "true",
-                "date": date,
-                "transaction_hash": transaction_hash 
+                    "result": "true",
+                    "date": date,
+                    "transaction_hash": transaction_hash 
                 })
             else:
                 print("No notarised documents in database")
                 return JsonResponse({"result": "false"})
         except Exception as exception:
-            print("Exception: "+exception)
+            print("Exception: " + str(exception))
             return JsonResponse({"result": "false"})
     else:
         return JsonResponse({'result': 'false'})
 
 def ajax_send_mail(request):
-    if(request.POST):
+    if request.POST:
         try:
-            send_mail(getattr(settings, "SITE_NAME"), "", getattr(settings, "EMAIL_HOST_USER"), [request.POST.get("mail_to")], html_message=request.POST.get("mail_body"))
+            send_mail(
+                getattr(settings, "SITE_NAME"),
+                "",
+                getattr(settings, "EMAIL_HOST_USER"),
+                [request.POST.get("mail_to")],
+                html_message=request.POST.get("mail_body")
+            )
             return JsonResponse({"result": "true"})
         except Exception as exception:
-            print("Exception: "+exception)
+            print("Exception: " + str(exception))
             return JsonResponse({"result": "false"})
     else:
         return JsonResponse({'result': 'false'})
 
 def ajax_set_proof(request):
-    if(request.POST):
+    if request.POST:
         try:
-            proof=Submissions.objects.filter(transaction_hash=request.POST.get("transaction_hash")).update(has_proof=True)
+            proof = Submissions.objects.filter(transaction_hash=request.POST.get("transaction_hash")).update(has_proof=True)
             return JsonResponse({'result': 'true'})
-        except:
+        except Exception as e:
+            print(f"Exception: {e}")
             return JsonResponse({'result': 'false'})
     else:
         return JsonResponse({'result': 'false'})
 
 def home(request):
- 
     if request.user.is_anonymous:
         return render(
             request=request,
@@ -149,9 +151,8 @@ def home(request):
             },
         )
 
-
     user = request.user
-    user.last_login = datetime.datetime.now()
+    user.last_login = timezone.now()  # Use timezone.now() here
     user.save()
 
     ip = request.META['REMOTE_ADDR']
@@ -160,5 +161,5 @@ def home(request):
     return render(
         request=request,
         template_name='dashboard.html',
-        context={'user':request.user,},
+        context={'user': request.user,},
     )

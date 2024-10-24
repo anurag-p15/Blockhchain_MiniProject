@@ -5,6 +5,10 @@
 
 {% include "header.html" %}
 
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'main.css' %}">
+
 <div class="alert-top"><img class="warning" src="/static/images/warning.svg" />You need to acess the site from desktop to be able to notarise your documents</div>
   <main class="inner-content">
     <section class="center">
@@ -60,37 +64,11 @@
                   &nbsp;}<br/>
               }<br/>
           </code>
-          This service is open source and the full code (including the contract) can be seen on <a href="https://github.com/janfilips/blockchain-notary" target="_blank">here</a>.
           <br/>
           The contract itself can be seen accessed <a href="#">here</a>.
         </p>
         </div><!-- content 4 END -->
       </div>
-      <div class="centerp">
-        <h2>FAQ</h2>
-        <div class="content-box"><!-- content 5 -->
-        <p>
-          Question: Where do I find the source code?
-          <br/>
-          Answer: Over here <a href="https://github.com/janfilips/blockchain-notary" target="_blank">https://github.com/janfilips/blockchain-notary</a>
-          <br/>
-          <br/>
-          Question: Where can I see the contract?<br/>
-          Answer: Our Smart-contract can be accessed <a href="#">here</a>.
-          <br/>
-          <br/>
-          Freel free to contact us should you have any questions.
-        </p>
-        </div><!-- content 5 END -->
-      </div>
-      <div class="centerp">
-        <p>
-            <font color="white">Free Software, Hell Yeah!</font>
-          <br/>
-          <font color="white">&copy;2021 <a href="http://github.com/janfilips" target="_blank"><font color="white">Jan Filips</font></a></font>
-        </p>
-      </div>
-
     </section>
   </main>
 {% endblock content %}
